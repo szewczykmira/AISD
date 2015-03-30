@@ -2,72 +2,99 @@
 #include <vector>
 #include <algorithm>
 #include <utility>
+#include <map>
+#include <set>
 using namespace std;
 
-bool func(int i, int j) { return (i>j); }
+const int MAXSUM=1000001;
+int suffix_sum = 0;
+int pierwsza_niezerowa = MAXSUM;
+vector<int> lego;
+map<int, int> reszta;
+map<int, int> buffer;
 
-pair<int, int> pair_max(pair<int,int> a, pair<int, int> b)
+bool func(int i, int j)
 {
-  if(a.first> b.first) return a;
-  if(a.first == b.first && a.second > b.second) return a;
-  return b;
+    return (i>j);
 }
 
-int main(){
-  unsigned int num, tmp;
-  unsigned int suffix_sum = 0;
-  vector<int> odwiedzone;
-  pair<int, int> zerowa = make_pair(0,0);
-  scanf("%d", &num);
-  vector<int> lego(num);
-  for(int i=0; i<num; ++i) {
-    scanf("%d", &tmp);
-    lego[i] = tmp;
-    suffix_sum += tmp;
-  }
-  sort(lego.begin(), lego.end(), func);
-  vector<pair<int,int> > reszta(suffix_sum, make_pair(0,0));
-  odwiedzone.reserve(suffix_sum);
-  odwiedzone.push_back(0);
-  for(int i=0; i<lego.size(); ++i)
-  {
-    vector<pair<int, int> > new_lego;
-    new_lego.reserve(int(odwiedzone.size())*2);
-    for(int j=0; j<odwiedzone.size(); ++j)
-    {
-      new_lego.push_back(make_pair(reszta[odwiedzone[j]].first + lego[i],
-            reszta[odwiedzone[j]].second));
-      if(reszta[odwiedzone[j]].second + lego[i] > reszta[odwiedzone[j]].first)
-      {
-        new_lego.push_back(make_pair( reszta[odwiedzone[j]].second + lego[i],
-              reszta[odwiedzone[j]].first ) );
-      } else {
-        new_lego.push_back(make_pair( reszta[odwiedzone[j]].first
-              , reszta[odwiedzone[j]].second + lego[i] ) );
-      }
+void read_data()
+{
+    int num, tmp;
+    scanf("%d", &num);
+    for(int i=0; i<num; ++i) {
+        scanf("%d", &tmp);
+        lego.push_back(tmp);
+        suffix_sum += tmp;
     }
+}
 
-    for(int k=0; k<new_lego.size(); ++k) {
-      tmp = new_lego[k].first - new_lego[k].second;
-      if(reszta[tmp] == zerowa && tmp != 0) {odwiedzone.push_back(tmp);}
-      if(tmp < suffix_sum) {
-        reszta[tmp] = pair_max(new_lego[k], reszta[tmp]);
+void buffer_push(const int a, const int b)
+{
+    const int mi = min(a,b);
+    const int mx = max(a,b);
+    const int tmp = mx - mi;
+    if(tmp < suffix_sum + pierwsza_niezerowa) {
+      if(buffer.find(tmp) != buffer.end()){
+        buffer[tmp] = max(mx, buffer[tmp]);
+      } else {
+        buffer[tmp] = mx;
       }
     }
-    // suffix_sum -= lego[i];
-    new_lego.clear();
+}
+
+void flush_buffer()
+{
+  for(map<int, int>::iterator i=buffer.begin(); i != buffer.end(); ++i) {
+      int key = i->first;
+      reszta[key] = max(i->second, reszta[key]);
+      if(reszta[key] - key != 0 && key < pierwsza_niezerowa) {
+          pierwsza_niezerowa = key;
+      }
   }
-  for(int i=0; i<reszta.size(); ++i) {
-    if(reszta[i] != zerowa) {
-      tmp = i;
-      break;
-    } 
-  }
-  if(tmp == 0){
-    printf("TAK\n%d\n", reszta[0].first);
-    return 0;
-  }
-  printf("NIE\n%d\n", tmp);
-  return 0;
+  buffer.clear();
+}
+
+void crunch_data()
+{
+    sort(lego.begin(), lego.end(), func);
+    reszta[0] = 0;
+    for(int i=0; i<lego.size(); ++i) {
+        for(map<int, int>::iterator j=reszta.begin(); j != reszta.end(); ++j) {
+            int higher = j->second;
+            int lower = j->second - j->first;
+            buffer_push( higher + lego[i],
+                            lower);
+
+            buffer_push( lower + lego[i],
+                           higher);
+        }
+        flush_buffer();
+        suffix_sum -= lego[i];
+    }
+}
+
+void output_solution()
+{
+  int tmp;
+    for(map <int, int>::iterator i=reszta.begin(); i != reszta.end(); ++i) {
+        if((i->second - i->first) != 0) {
+            tmp = i->first;
+            break;
+        }
+    }
+    if(tmp == 0) {
+        printf("TAK\n%d\n", reszta[0]);
+        exit(0);
+    }
+    printf("NIE\n%d\n", tmp);
+    exit(0);
+}
+
+int main()
+{
+    read_data();
+    crunch_data();
+    output_solution();
 }
 

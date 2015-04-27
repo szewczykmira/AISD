@@ -1,3 +1,6 @@
 main
+*.plus
+*.rb
+*.in
 *.out
 *.bak

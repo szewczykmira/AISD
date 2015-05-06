@@ -13,10 +13,6 @@ vector<vector< vector<int> > > list_of(32, vector<vector <int> >(32, vector<int>
 
 char pos[3] = ".x";
 
-int dynamic(int i, int j){
-  return 0;
-}
-
 // Define how looks every possible row
 void define_patterns(){
   int iter = 0;
@@ -39,7 +35,7 @@ void define_patterns(){
 void handle_pattern(){
   char pat[10] = "036147258";
   for (int i = 0; i < 3; i++) {
-    scanf("%s %s %s", &pat[3*i + 0], &pat[3*i + 1], &pat[3*i + 2]);
+    scanf("%s%s%s", &pat[3*i + 0], &pat[3*i + 1], &pat[3*i + 2]);
   }
   // create all permutation 5x3 with wrong pattern!
   for(int i=0; i<2; ++i){
@@ -66,17 +62,27 @@ void handle_pattern(){
 }
 
 //Check how many is permutation which ends on rows drugi trzeci
-int ends_with(int drugi, int trzeci){
+int ends_with(int drugi, int trzeci, int n){
   int wynik = 0;
   for(int i=0; i<32; ++i){
     string merged_rows = list_of_all_patterns[i] + list_of_all_patterns[drugi] + list_of_all_patterns[trzeci];
     if(binary_search(wrong_patterns.begin(), wrong_patterns.end(), merged_rows)){
-      wynik += dynamic(i, drugi);
+      wynik += list_of[i][drugi][n];
     }
   }
   return wynik;
 }
 
+void calculate_result(){
+  for(int iter=3; iter<=num; ++iter){
+    int modul = iter % 2;
+    for(int drugi=0; drugi<32; ++drugi){
+      for(int trzeci=0; trzeci<32; ++trzeci){
+        list_of[drugi][trzeci][modul] = ends_with(drugi, trzeci, 1-modul) % modulo;
+      }
+    }
+  }
+}
 
 //Get input
 void get_numbers_and_patterns(){
@@ -87,9 +93,23 @@ void get_numbers_and_patterns(){
   }
 }
 
+void display_for_num(){
+  int wynik = 0;
+  int mods = num % 2;
+  for(int i=0; i<32; ++i){
+    for(int j=0; j<32; ++i){
+      wynik += list_of[i][j][mods];
+      wynik %= modulo;
+    }
+  }
+  printf(" %d \n", wynik);
+}
+
 //main function
 int main(){
   define_patterns();
   get_numbers_and_patterns();
+  calculate_result();
+  display_for_num();
   return 0;
 }

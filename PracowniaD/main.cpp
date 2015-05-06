@@ -75,7 +75,6 @@ int ends_with(int drugi, int trzeci){
   return wynik;
 }
 
-//Generate result for n
 
 //Get input
 void get_numbers_and_patterns(){

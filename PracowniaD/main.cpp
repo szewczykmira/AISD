@@ -9,6 +9,8 @@ int num, modulo;
 // x/1 -> black, ./0 -> white
 vector<string> wrong_patterns;
 vector<string> list_of_all_patterns(32);
+vector<vector< vector<int> > > list_of(32, vector<vector <int> >(32, vector<int>(2,1)));
+
 char pos[3] = ".x";
 
 int dynamic(int i, int j){

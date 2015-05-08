@@ -33,10 +33,24 @@ void define_patterns(){
 
 //Generate any possible wrong pattern
 void handle_pattern(){
-  char pat[10] = "036147258";
-  for (int i = 0; i < 3; i++) {
-    scanf("%s%s%s", &pat[3*i + 0], &pat[3*i + 1], &pat[3*i + 2]);
-  }
+  char buf[10] = "012345678";
+  /* 0 3 6
+   * 1 4 7
+   * 2 5 8
+   */
+  scanf("%s%s%s", &buf[0], &buf[3], &buf[6]);
+  char pat[10];
+  pat[0] = buf[0];
+  pat[1] = buf[3];
+  pat[2] = buf[6];
+  pat[3] = buf[1];
+  pat[4] = buf[4];
+  pat[5] = buf[7];
+  pat[6] = buf[2];
+  pat[7] = buf[5];
+  pat[8] = buf[8];
+
+
   // create all permutation 5x3 with wrong pattern!
   for(int i=0; i<2; ++i){
     for(int j=0; j<2; ++j){
@@ -44,14 +58,14 @@ void handle_pattern(){
         for(int l=0; l<2; ++l){
           for(int m=0; m<2; ++m){
             for(int n=0; n<2; ++n){
-              char forbidden_pattern[3][16] = { 
+              char forbidden_pattern[3][16] = {
               { pat[0], pat[1], pat[2], pos[i], pos[j], pat[3], pat[4], pat[5], pos[k], pos[l], pat[6], pat[7], pat[8], pos[m], pos[n]},
-              { pos[i], pat[0], pat[1], pat[2], pos[j], pos[k], pat[3], pat[4], pat[5], pos[l], pos[m], pos[6], pos[7], pos[8], pos[n]},
+              { pos[i], pat[0], pat[1], pat[2], pos[j], pos[k], pat[3], pat[4], pat[5], pos[l], pos[m], pat[6], pat[7], pat[8], pos[n]},
               { pos[i], pos[j], pat[0], pat[1], pat[2], pos[k], pos[l], pat[3], pat[4], pat[5], pos[m], pos[n], pat[6], pat[7], pat[8]}
               };
-              wrong_patterns.push_back(forbidden_pattern[0]);
-              wrong_patterns.push_back(forbidden_pattern[1]);
-              wrong_patterns.push_back(forbidden_pattern[2]);
+              for (int o = 0; o < 3; ++o) {
+                wrong_patterns.push_back(forbidden_pattern[o]);
+              }
             }
           }
         }
@@ -78,6 +92,7 @@ void calculate_result(){
     int modul = iter % 2;
     for(int drugi=0; drugi<32; ++drugi){
       for(int trzeci=0; trzeci<32; ++trzeci){
+        printf("%d/%d %d/32 %d/32\n", iter, num+1, drugi, trzeci);
         list_of[drugi][trzeci][modul] = ends_with(drugi, trzeci, 1-modul) % modulo;
       }
     }
@@ -97,7 +112,8 @@ void display_for_num(){
   int wynik = 0;
   int mods = num % 2;
   for(int i=0; i<32; ++i){
-    for(int j=0; j<32; ++i){
+    for(int j=0; j<32; ++j){
+      printf("%d/32 %d/32\n", i, j);
       wynik += list_of[i][j][mods];
       wynik %= modulo;
     }
@@ -108,8 +124,12 @@ void display_for_num(){
 //main function
 int main(){
   define_patterns();
+  printf("After define!\n");
   get_numbers_and_patterns();
+  printf("After patterns!\n");
   calculate_result();
+  printf("After result!\n");
   display_for_num();
+  printf("After display!\n");
   return 0;
 }

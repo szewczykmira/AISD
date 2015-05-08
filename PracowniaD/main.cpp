@@ -87,6 +87,18 @@ int ends_with(int drugi, int trzeci, int n){
   return wynik;
 }
 
+void display_for(int num){
+  int wynik = 0;
+  int mods = num % 2;
+  for(int i=0; i<32; ++i){
+    for(int j=0; j<32; ++j){
+      wynik += list_of[i][j][mods];
+      wynik %= modulo;
+    }
+  }
+  printf("%d \n", wynik);
+}
+
 void calculate_result(){
   for(int iter=3; iter<=num; ++iter){
     int modul = iter % 2;
@@ -107,23 +119,11 @@ void get_numbers_and_patterns(){
   }
 }
 
-void display_for_num(){
-  int wynik = 0;
-  int mods = num % 2;
-  for(int i=0; i<32; ++i){
-    for(int j=0; j<32; ++j){
-      wynik += list_of[i][j][mods];
-      wynik %= modulo;
-    }
-  }
-  printf(" %d \n", wynik);
-}
-
 //main function
 int main(){
   define_patterns();
   get_numbers_and_patterns();
   calculate_result();
-  display_for_num();
+  display_for(num);
   return 0;
 }

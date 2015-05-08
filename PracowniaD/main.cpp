@@ -80,7 +80,7 @@ int ends_with(int drugi, int trzeci, int n){
   int wynik = 0;
   for(int i=0; i<32; ++i){
     string merged_rows = list_of_all_patterns[i] + list_of_all_patterns[drugi] + list_of_all_patterns[trzeci];
-    if(binary_search(wrong_patterns.begin(), wrong_patterns.end(), merged_rows)){
+    if(!binary_search(wrong_patterns.begin(), wrong_patterns.end(), merged_rows)){
       wynik += list_of[i][drugi][n];
     }
   }
@@ -92,7 +92,6 @@ void calculate_result(){
     int modul = iter % 2;
     for(int drugi=0; drugi<32; ++drugi){
       for(int trzeci=0; trzeci<32; ++trzeci){
-        printf("%d/%d %d/32 %d/32\n", iter, num+1, drugi, trzeci);
         list_of[drugi][trzeci][modul] = ends_with(drugi, trzeci, 1-modul) % modulo;
       }
     }
@@ -113,7 +112,6 @@ void display_for_num(){
   int mods = num % 2;
   for(int i=0; i<32; ++i){
     for(int j=0; j<32; ++j){
-      printf("%d/32 %d/32\n", i, j);
       wynik += list_of[i][j][mods];
       wynik %= modulo;
     }
@@ -124,12 +122,8 @@ void display_for_num(){
 //main function
 int main(){
   define_patterns();
-  printf("After define!\n");
   get_numbers_and_patterns();
-  printf("After patterns!\n");
   calculate_result();
-  printf("After result!\n");
   display_for_num();
-  printf("After display!\n");
   return 0;
 }

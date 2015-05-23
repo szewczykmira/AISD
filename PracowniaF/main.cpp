@@ -15,28 +15,51 @@ void get_data(){
     getline(cin, row);
     pattern.push_back(row);
   }
-  string wiersz;
   for(int i=0; i<table_h; ++i){
-    getline(cin, wiersz);
-    data_table.push_back(wiersz);
+    getline(cin, row);
+    data_table.push_back(row);
   }
 }
 
 void check_rest(int first_row, int first_char){
+  bool works = true;
+  for(int i=1; i<pattern_h; ++i){
+    string substring = data_table[first_row + i].substr(first_char, pattern_w);
+    printf("%d substring: %s pattern: %s\n", i, substring.c_str(), pattern[i].c_str());
+    if(substring != pattern[i]){
+      printf("Diffrent!\n");
+      works = false;
+      break;
+    }
+  }
+  if(works){
+    how_many++;
+    printf("Wynik: %d\n", how_many);
+  }
 }
 
 void find_pattern(){
-  for(int i=0; i<data_table.size(); ++i){
-    for(int j=0; j<(data_table.size() - pattern.size()); ++j){
-      if(data_table[i].substr(j, pattern_w) == pattern[0] ){
+  for(int i=0; i<=(data_table.size() - pattern_h); ++i){
+    printf("Wiersz: %s \n", data_table[i].c_str());
+    for(int j=0; j<=(data_table.size() - pattern.size() + 1); ++j){
+      string substring = data_table[i].substr(j, pattern_w);
+      printf("j: %d substr: %s\n", j, substring.c_str());
+      if(substring == pattern[0] ){
+        printf("True\n");
         check_rest(j, i);
       }
     }
+    printf("\n");
   }
+}
+
+void return_value(){
+  printf("%d\n", how_many);
 }
 
 int main(){
   get_data();
   find_pattern();
+  return_value();
   return 0;
 }

@@ -1,4 +1,5 @@
 #include <iostream>
+#include <stdio.h>
 #include <string>
 #include <vector>
 using namespace std;
@@ -19,10 +20,12 @@ void get_data(){
     getline(cin, row);
     data_table.push_back(row);
   }
+  printf("\n");
 }
 
 void check_rest(int first_row, int first_char){
   bool works = true;
+  printf("In check rest \n");
   for(int i=1; i<pattern_h; ++i){
     string substring = data_table[first_row + i].substr(first_char, pattern_w);
     printf("%d substring: %s pattern: %s\n", i, substring.c_str(), pattern[i].c_str());
@@ -43,11 +46,12 @@ void find_pattern(){
     printf("Wiersz: %s \n", data_table[i].c_str());
     for(int j=0; j<=(data_table.size() - pattern.size() + 1); ++j){
       string substring = data_table[i].substr(j, pattern_w);
-      printf("j: %d substr: %s\n", j, substring.c_str());
+      printf("j: %d substr: %s pattern: %s \n", j, substring.c_str(), pattern[0].c_str());
       if(substring == pattern[0] ){
         printf("True\n");
-        check_rest(j, i);
+        check_rest(i, j);
       }
+      printf("\n");
     }
     printf("\n");
   }
